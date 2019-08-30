@@ -13,7 +13,7 @@
 #include <stdbool.h>
 
 void socket_addr_iterate(socket_t* skt, struct addrinfo* result);
-int socket_getaddrinfo(struct addrinfo* result, const char* host, const char* service, bool pasive);
+int socket_getaddrinfo(struct addrinfo **result, const char* host, const char* service, bool pasive);
 
 void socket_init(socket_t* socket) {
 	socket->fd = -1; //initialize to invalid fd
@@ -26,7 +26,7 @@ void socket_release(socket_t* skt) {
 
 int socket_connect(socket_t* skt, const char* host, const char* service) {
 	struct addrinfo *result = NULL;
-	int s = socket_getaddrinfo(result, host, service, true);
+	int s = socket_getaddrinfo(&result, host, service, true);
 
 	if (s != 0) { 
     	printf("Error in getaddrinfo: %s\n", gai_strerror(s));
@@ -41,7 +41,7 @@ int socket_connect(socket_t* skt, const char* host, const char* service) {
 int socket_bind_and_listen(socket_t* skt, const char* service, int listen_amount) {
 	struct addrinfo *ptr = NULL;
 
-	int s = socket_getaddrinfo(ptr, NULL, service, true);
+	int s = socket_getaddrinfo(&ptr, NULL, service, true);
 	if (s != 0) {
     	printf("Error in getaddrinfo: %s\n", gai_strerror(s));
     	return 1;
@@ -161,7 +161,7 @@ void socket_addr_iterate(socket_t* skt, struct addrinfo* result) {
 	}
 }
 
-int socket_getaddrinfo(struct addrinfo* addrinfo_ptr, const char* host, const char* service, bool passive) {
+int socket_getaddrinfo(struct addrinfo **addrinfo_ptr, const char* host, const char* service, bool passive) {
 	struct addrinfo hints;
 	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_family = AF_INET;
@@ -169,10 +169,10 @@ int socket_getaddrinfo(struct addrinfo* addrinfo_ptr, const char* host, const ch
 
 	if (passive){
 		hints.ai_flags = AI_PASSIVE;
-		return getaddrinfo(NULL, service, &hints, &addrinfo_ptr);
+		return getaddrinfo(NULL, service, &hints, addrinfo_ptr);
 	}
 	else {
 		hints.ai_flags = 0;
-		return getaddrinfo(host, service, &hints, &addrinfo_ptr);
+		return getaddrinfo(host, service, &hints, addrinfo_ptr);
 	}
 }
