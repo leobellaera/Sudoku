@@ -2,7 +2,7 @@
 
 int client_init(client_t* client, const char* host, const char* service) {
 	socket_init(&client->skt);
-	return (socket_connect(&client->skt, host, service) == 1);
+	return socket_connect(&client->skt, host, service);
 }
 
 int client_recv_message(client_t* client, char* buf, int size) {
