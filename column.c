@@ -21,8 +21,8 @@ int column_add_number(column_t* column, int number, int row) {
 }
 
 bool column_is_valid(column_t* column){
-	int j;
-	for (int i = 0; i < 9; i++) {
+	int i, j;
+	for (i = 0; i < 9; i++) {
         for (j = i + 1; j < 9; j++) {
         	if (!cell_is_valid(&column->cells[i]), &column->cells[j]) {
         		return false;
