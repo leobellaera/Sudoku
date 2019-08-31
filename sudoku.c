@@ -7,10 +7,16 @@ sector_t* sudoku_get_sector(sudoku_t* sudoku, int row, int column);
 int get_index(int number);
 
 int sudoku_init(sudoku_t* sudoku, int **matrix){
+	//matrix.c
+	//
+	//matrix_get_column(matrix, num_col)
+	//matrix_get_sector_row(int row)
+	//matrix_get_sector_column(int column)
 	//int i;
 	//for (i=0; i<9)..
-		//row_init(matrix[i])
-		//sector_init(ma)
+		//row_init(matrix_get_row(matrix, num_fila))
+		//column_init(matrix_get_column(matrix,num_col))
+	//sector_init(matrix
 }
 
 int put(sudoku_t* sudoku, int number, int row, int column) {

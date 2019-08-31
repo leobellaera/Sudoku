@@ -2,10 +2,13 @@
 #define _ROW_H_
 
 #include <stdbool.h>
+#include "cell.h"
 
 typedef struct row {
 	cell_t cells[9];
 } row_t;
+
+void row_init(row_t* row, int* elements);
 
 int row_add_number(row_t* row, int number, int column);
 

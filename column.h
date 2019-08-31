@@ -2,10 +2,13 @@
 #define _COLUMN_H_
 
 #include <stdbool.h>
+#include "cell.h"
 
 typedef struct column {
 	cell_t cells[9];
 } column_t;
+
+void column_init(column_t* column, int* elements);
 
 int column_add_number(column_t* column, int number, int row);
 

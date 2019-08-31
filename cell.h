@@ -8,14 +8,14 @@ typedef struct cell {
 	int number;
 } cell_t;
 
+void cell_init(cell_t* cell, int number, bool modifiable);
+
 bool cell_is_modifiable(cell_t* cell);
 
 void cell_set_number(cell_t* cell, int numb);
 
-int cell_get_number(cell_t* cell);
+bool cell_is_valid(cell_t* cell_a, cell_t* cell_b);
 
 void cell_restart(cell_t* cell);
-
-void cell_set_unmodifiable(cell_t* cell);
 
 #endif

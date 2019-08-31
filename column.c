@@ -1,5 +1,17 @@
 #include "column.h"
 
+void column_init(column_t* column, int* elements) {
+	int elem;
+	for (int i=0; i<9; i++) {
+		elem = elements[i];
+		if (elem == 0) {
+			cell_init(&column->cells[i], elem, true);
+		} else {
+			cell_init(&column->cells[i], elem, false);
+		}
+	}
+}
+
 int column_add_number(column_t* column, int number, int row) {
 	if (!cell_is_modifiable(&column->cells[row])) {
 		return 1;
@@ -8,22 +20,16 @@ int column_add_number(column_t* column, int number, int row) {
 	return 0;
 }
 
-bool column_is_valid(column_t* column) {
-	int numbs[9] = NULL;
-	size_t actual_pos = 0;
+bool column_is_valid(column_t* column){
 	int j;
-	int elem;
-	for (int i=0; i<9; i++) {
-		elem = cell_get_number(&column->cells[i]);
-		for (j=0; j<actual_pos; j++) {
-			if (numbs[j] == elem && numb != 0) {
-				return false;
-			}
-		}
-		numbs[actual_pos] = elem;
-		actual_pos += 1;
-	}
-	return true;
+	for (int i = 0; i < 9; i++) {
+        for (j = i + 1; j < 9; j++) {
+        	if (!cell_is_valid(&column->cells[i]), &column->cells[j]) {
+        		return false;
+        	}
+        }
+   	}
+   	return true;
 }
 
 void column_restart_cells(column_t* column) {

@@ -1,5 +1,17 @@
 #include "row.h"
 
+void row_init(row_t* row, int* elements) {
+	int elem;
+	for (int i=0; i<9; i++) {
+		elem = elements[i];
+		if (elem == 0) {
+			cell_init(&row->cells[i], elem, true);
+		} else {
+			cell_init(&row->cells[i], elem, false);
+		}
+	}
+}
+
 int row_add_number(row_t* row, int number, int column) {
 	if (!cell_is_modifiable(&row->cells[column])) {
 		return 1;
@@ -9,21 +21,15 @@ int row_add_number(row_t* row, int number, int column) {
 }
 
 bool row_is_valid(row_t* row) {
-	int numbs[9] = NULL;
-	size_t actual_pos = 0;
 	int j;
-	int numb;
-	for (int i=0; i<9; i++) {
-		numb = cell_get_number(&row->cells[i]);
-		for (j=0; j<actual_pos; j++) {
-			if (numbs[j] == numb && numb!= 0) {
-				return false;
-			}
-		}
-		numbs[actual_pos] = numb;
-		actual_pos += 1;
-	}
-	return true;
+	for (int i = 0; i < 9; i++) {
+        for (j = i + 1; j < 9; j++) {
+        	if (!cell_is_valid(&row->cells[i]), &row->cells[j]) {
+        		return false;
+        	}
+        }
+   	}
+   	return true;
 }
 
 void row_restart_cells(row_t* row) {
