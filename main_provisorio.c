@@ -25,10 +25,3 @@ int main(int argc, char* argv[]){
 
 	return 0;
 }
-
-/*podria tener un tda protocolo cliente y otro protocolo servidor, inicializarlos en el main y que x ejemplo 
-el tda protocolo server tiene una funcion procesar y en el main pongo un loop infinito y voy procesando los requests
-que me hace el cliente. el tda protocolo conoceria a sudoku y usaria un tda cliente y un tda servidor para ir mandando
-y coordinando los mensajes*/
-
-//Netcat nos toma el barra n del enter por lo cual nos da el salto del inea
