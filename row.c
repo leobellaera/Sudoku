@@ -12,11 +12,11 @@ void row_init(row_t* row, int* elements) {
 	}
 }
 
-int row_add_number(row_t* row, int number, int column) {
-	if (!cell_is_modifiable(&row->cells[column])) {
+int row_add_number(row_t* row, int number, int pos) {
+	if (!cell_is_modifiable(&row->cells[pos])) {
 		return 1;
 	}
-	cell_set_number(&row->cells[column], number);
+	cell_set_number(&row->cells[pos], number);
 	return 0;
 }
 

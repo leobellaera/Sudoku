@@ -17,11 +17,11 @@ void sector_init(sector_t* sector, int** elements) {
 	}
 }
 
-int sector_add_number(sector_t* sector, int row, int column) {
+int sector_add_number(sector_t* sector, int number, int row, int column) {
 	if (!cell_is_modifiable(&sector->cells[row][column])){
 		return 1;
 	}
-	cell_set_number(&sector->cells[row][column]);
+	cell_set_number(&sector->cells[row][column], number);
 	return 0;
 }
 

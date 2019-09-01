@@ -10,7 +10,7 @@ typedef struct column {
 
 void column_init(column_t* column, int* elements);
 
-int column_add_number(column_t* column, int number, int row);
+int column_add_number(column_t* column, int number, int pos);
 
 bool column_is_valid(column_t* column);
 

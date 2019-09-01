@@ -10,7 +10,7 @@ typedef struct row {
 
 void row_init(row_t* row, int* elements);
 
-int row_add_number(row_t* row, int number, int column);
+int row_add_number(row_t* row, int number, int pos);
 
 bool row_is_valid(row_t* row);
 

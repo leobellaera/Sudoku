@@ -12,11 +12,11 @@ void column_init(column_t* column, int* elements) {
 	}
 }
 
-int column_add_number(column_t* column, int number, int row) {
-	if (!cell_is_modifiable(&column->cells[row])) {
+int column_add_number(column_t* column, int number, int pos) {
+	if (!cell_is_modifiable(&column->cells[pos])) {
 		return 1;
 	}
-	cell_set_number(&column>cells[row], number);
+	cell_set_number(&column>cells[pos], number);
 	return 0;
 }
 

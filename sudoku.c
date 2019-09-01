@@ -1,22 +1,46 @@
 #include "sudoku.h"
 #include <stdlib.h>
+#include "sudoku_matrix_operator.c"
 
 
 //forward declarations
 sector_t* sudoku_get_sector(sudoku_t* sudoku, int row, int column);
-int get_index(int number);
+int get_sector_index(int i);
+void columns_init(sudoku_t* sudoku, int** matrix);
+void rows_init(sudoku_t* sudoku, int** matrix);
+void sectors_init(sudoku_t* sudoku, int** matrix);
 
-int sudoku_init(sudoku_t* sudoku, int **matrix){
-	//matrix.c
-	//
-	//matrix_get_column(matrix, num_col)
-	//matrix_get_sector_row(int row)
-	//matrix_get_sector_column(int column)
-	//int i;
-	//for (i=0; i<9)..
-		//row_init(matrix_get_row(matrix, num_fila))
-		//column_init(matrix_get_column(matrix,num_col))
-	//sector_init(matrix
+
+void sudoku_init(sudoku_t* sudoku, int **matrix){
+	columns_init(sudoku, matrix);
+	rows_init(sudoku, matrix);
+	sectors_init(sudoku, matrix);
+}
+
+void columns_init(sudoku_t* sudoku, int** matrix) {
+	int aux[9];
+	for (int i = 0; i < 9; i++) {
+		matrix_get_column(matrix, &aux, i);
+		column_init(&sudoku->columns[i], &aux);
+	}
+}
+
+void rows_init(sudoku_t* sudoku, int** matrix) {
+	int aux[9];
+	for (int i = 0; i < 9; i++) {
+		matrix_get_row(matrix, &aux, i);
+		row_init(&sudoku->rows[i], &aux);
+	}
+}
+
+void sectors_init(sudoku_t* sudoku, int** matrix) {
+	int aux_matrix[3][3];
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			matrix_get_sector(matrix, &aux_matrix, i, j);
+			sector_init(&sudoku->sectors[i][j], &aux_matrix);
+		}
+	}
 }
 
 int put(sudoku_t* sudoku, int number, int row, int column) {
@@ -24,7 +48,11 @@ int put(sudoku_t* sudoku, int number, int row, int column) {
 		return 1;
 	}
 	column_add_number(&sudoku->column[column], number, row);
-	sector_add_number(sudoku_get_sector(sudoku, row, column), number);
+
+	int sector_row = get_sector_column(column);
+	int sector_column = get_sector_row(row);
+	sector_add_number(sudoku_get_sector(sudoku, row, column), number, sector_row, sector_column);
+	
 	return 0;
 }
 
@@ -59,12 +87,12 @@ void sudoku_restart(sudoku_t* sudoku) {
 	}
 }
 
-int get_index(int number) {
-	if (number<=2) return 0;
-	else if (number>2 && number<=5) return 1;
-	else if (number>5) return 2;
+sector_t* sudoku_get_sector(sudoku_t* sudoku, int row, int column) {
+	return &sudoku->sectors[get_sector_index(row)],get_sector_index(column)];
 }
 
-sector_t* sudoku_get_sector(sudoku_t* sudoku, int row, int column) {
-	return &sudoku->sectors[get_index(row)],get_index(column)];
+int get_sector_index(int i) {
+	if (i<=2) return 0;
+	else if (i>2 && i<=5) return 1;
+	else if (i>5) return 2;
 }
