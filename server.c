@@ -17,11 +17,11 @@ int server_recv_message(server_t* sv, char* buf, int size) {
 	return socket_recv_message(&sv->peer_skt, buf, size);
 }
 
-int server_send_message(server_t* sv, char* buf, int size){
+int server_send_message(server_t* sv, char* buf, int size) {
 	return socket_send_message(&sv->peer_skt, buf, size);
 }
 
-void server_release(server_t* sv){
+void server_release(server_t* sv) {
 	socket_release(&sv->sv_skt);
 	socket_release(&sv->peer_skt);
 }
