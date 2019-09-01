@@ -11,7 +11,7 @@ typedef struct sudoku {
 	sector_t sectors[3][3]; //sectors matrix
 } sudoku_t;
 
-void sudoku_init(sudoku_t* sudoku, int **matrix); //Necesitaremos un parser que cuando levante el archivo lo convierta a una matriz de enteros
+void sudoku_init(sudoku_t* sudoku, int matrix[9][9]); //Necesitaremos un parser que cuando levante el archivo lo convierta a una matriz de enteros
 
 int sudoku_put(sudoku_t* sudoku, int number, int row, int column);
 

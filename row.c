@@ -24,7 +24,7 @@ bool row_is_valid(row_t* row) {
 	int j;
 	for (int i = 0; i < 9; i++) {
         for (j = i + 1; j < 9; j++) {
-        	if (!cell_is_valid(&row->cells[i]), &row->cells[j]) {
+        	if (!cell_is_valid(&row->cells[i], &row->cells[j])) {
         		return false;
         	}
         }
@@ -34,6 +34,6 @@ bool row_is_valid(row_t* row) {
 
 void row_restart_cells(row_t* row) {
 	for (int i=0; i<9; i++) {
-		cell_restart(&row->cells[i])
+		cell_restart(&row->cells[i]);
 	}
 }

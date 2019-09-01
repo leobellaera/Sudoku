@@ -17,7 +17,7 @@ int cell_get_number(cell_t* cell) {
 	return cell->number;
 }
 
-bool is_valid(cell_t* cell_a, cell_t* cell_b) {
+bool cell_is_valid(cell_t* cell_a, cell_t* cell_b) {
 	return (cell_a->number != cell_b->number || cell_a->number == 0);
 }
 

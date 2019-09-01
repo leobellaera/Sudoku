@@ -16,7 +16,7 @@ int column_add_number(column_t* column, int number, int pos) {
 	if (!cell_is_modifiable(&column->cells[pos])) {
 		return 1;
 	}
-	cell_set_number(&column>cells[pos], number);
+	cell_set_number(&column->cells[pos], number);
 	return 0;
 }
 
@@ -24,7 +24,7 @@ bool column_is_valid(column_t* column){
 	int i, j;
 	for (i = 0; i < 9; i++) {
         for (j = i + 1; j < 9; j++) {
-        	if (!cell_is_valid(&column->cells[i]), &column->cells[j]) {
+        	if (!cell_is_valid(&column->cells[i], &column->cells[j])) {
         		return false;
         	}
         }
@@ -34,6 +34,6 @@ bool column_is_valid(column_t* column){
 
 void column_restart_cells(column_t* column) {
 	for (int i=0; i<9; i++) {
-		cell_restart(&column->cells[i])
+		cell_restart(&column->cells[i]);
 	}
 }
