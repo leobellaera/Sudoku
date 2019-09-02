@@ -13,6 +13,4 @@ int server_protocol_init(server_protocol_t* protocol, const char* port, int matr
 
 int server_protocol_process(server_protocol_t* protocol);
 
-int send_message_to_client(server_protocol_t* protocol, char* mes); //para debuggear (DESPUES QUITAR)
-
 #endif

@@ -117,7 +117,7 @@ int send_message_to_client(server_protocol_t* protocol, char* mes) {
 		return 1;
 	}
 	for (int i = 0; i < mes_len; i++) {
-		if (server_send_message(&protocol->sv, &buffer[i], 1) == 1) {
+		if (server_send_message(&protocol->sv, &mes[i], 1) == 1) {
 			return 1;
 		}
 	}
@@ -129,7 +129,7 @@ int show_board_to_client(server_protocol_t* protocol) {
 	int matrix[9][9];
 	sudoku_show_board(&protocol->sudoku, matrix);
 	char board_representation[723];
-	assemble_board_representation(board_representation, matrix); //Hasta aca llego todo joya, seguir debuggeando!!!!!!!
+	assemble_board_representation(board_representation, matrix);
 	return send_message_to_client(protocol, board_representation);
 }
 	
