@@ -148,7 +148,6 @@ void socket_addr_iterate(socket_t* skt, struct addrinfo* result) {
 	bool connection_established = false;
 	int s;
 	for (ptr = result; ptr != NULL && connection_established == false; ptr = ptr->ai_next) {
-    	//IPv4 family and TCP (SOCK_STREAM) 
 		skt->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if (skt->fd == -1) {
 			printf("Error: %s\n", strerror(errno));

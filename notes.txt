@@ -1,0 +1,42 @@
+/*en el main iria algo como: while (True):
+								server_process_message(sv)
+
+
+*********************************************************
+
+EN EL MAIN: del lado del cliente tendremos algo asi como :
+while (!feof(stdin)){  //(o while true)
+	char str[80];
+
+	printf("Enter a new command: ");
+	fgets(str, 10, stdin);
+
+	client_process_command(client, str);
+}
+
+**********************************************************
+
+
+	****client_proccess_command(client_t* client, char* command){ //procesa el comando ingresado por el usuario y ve que mensaje mandar
+			//if (command == get) //igual hay q sacar el salto de linea primero
+				client_send_message(client, 'G');
+		}
+
+
+http://www.java2s.com/Code/C/Console/Usefgetstoreadstringfromstandardinput.htm
+
+
+del lado del cliente tenemos un tda protocolo_cliente_t o algo asi que tiene una funcion algo asi:
+
+proccess_input(){
+	if input == put 5 in 4,7:
+		client_send_message('P')..
+		htons(numero_input)
+		client_send_message(..)
+		client_recive_message(buffer, 4) //recibe 4 bytes para saber el largo del texto que viene
+
+}
+
+
+
+*/

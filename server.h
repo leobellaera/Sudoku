@@ -2,18 +2,13 @@
 #define _SERVER_H_
 
 #include "socket.h"
-// #include "sudoku.h"
 
 typedef struct server {
-	//sudoku_t* sudoku;
 	socket_t sv_skt;
 	socket_t peer_skt;
-	//char buffer;
 } server_t;
 
 int server_init(server_t* sv, const char* port);
-
-//int server_connect(sever_t* server, const char* port);
 
 int server_accept_client(server_t* sv);
 

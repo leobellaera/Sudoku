@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 int main(int argc, char* argv[]){
 	char buf_receiver[5] = "Chau"; //Esto se rellenara con Hola
@@ -23,5 +24,8 @@ int main(int argc, char* argv[]){
 		printf("\nCantidad de bytes enviados: %d\n",client_send_message(&client, buf_transmitter, 5));
 	}
 
+	
 	return 0;
+
 }
+
