@@ -89,6 +89,12 @@ void sudoku_restart(sudoku_t* sudoku) {
 	}
 }
 
+void sudoku_show_board(sudoku_t* sudoku, int matrix[9][9]) {
+	for (int i = 0; i < 9; i++) {
+		row_show_cells(&sudoku->rows[i], matrix[i]);
+	}
+}
+
 sector_t* sudoku_get_sector(sudoku_t* sudoku, int row, int column) {
 	return &sudoku->sectors[get_sector_index(row)][get_sector_index(column)];
 }

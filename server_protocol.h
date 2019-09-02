@@ -1,6 +1,9 @@
 #ifndef _SERVER_PROTOCOL_H
 #define _SERVER_PROTOCOL_H
 
+#include "sudoku.h"
+#include "server.h"
+
 typedef struct {
 	server_t sv;
 	sudoku_t sudoku;
@@ -9,5 +12,7 @@ typedef struct {
 int server_protocol_init(server_protocol_t* protocol, const char* port, int matrix[9][9]);
 
 int server_protocol_process(server_protocol_t* protocol);
+
+int send_message_to_client(server_protocol_t* protocol, char* mes); //para debuggear (DESPUES QUITAR)
 
 #endif

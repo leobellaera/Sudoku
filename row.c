@@ -37,3 +37,9 @@ void row_restart_cells(row_t* row) {
 		cell_restart(&row->cells[i]);
 	}
 }
+
+void row_show_cells(row_t* row, int* ptr) {
+	for (int i = 0; i < 9; i++) {
+		ptr[i] = cell_get_number(&row->cells[i]);
+	}
+}

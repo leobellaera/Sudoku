@@ -2,7 +2,9 @@
 #include <string.h>
 #include <stdint.h>
 #include <arpa/inet.h>
-#include <board_representation_maker.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "board_representation_maker.h"
 
 //forward declarations
 int process_message(server_protocol_t* protocol, char message);
@@ -20,10 +22,10 @@ uint32_t calculate_str_len(char* str);
 
 int server_protocol_init(server_protocol_t* protocol, const char* port, int matrix[9][9]) {
 	sudoku_init(&protocol->sudoku, matrix);
-	int server_init = server_init(&protocol->sv, port);
-	if (server_init) {
+	if (server_init(&protocol->sv, port)) {
 		return 1;
 	}
+	server_accept_client(&protocol->sv);
 	return 0;
 }
 
@@ -83,7 +85,7 @@ int process_g_message(server_protocol_t* protocol) {
 }
 
 int process_r_message(server_protocol_t* protocol) {
-	sudoku_reset(&protocol->sudoku);
+	sudoku_restart(&protocol->sudoku);
 	return show_board_to_client(protocol);
 }
 
@@ -107,7 +109,7 @@ int send_valid_board_message(server_protocol_t* protocol) {
 
 int send_message_to_client(server_protocol_t* protocol, char* mes) {
 	uint32_t mes_len = htonl(calculate_str_len(mes));
-	int length = snprintf( NULL, 0, "%d", mes_len);
+	int length = snprintf(NULL, 0, "%d", mes_len);
 	char* buffer = malloc( length + 1 );
 	snprintf(buffer, length + 1, "%d", mes_len);
 
@@ -126,8 +128,8 @@ int send_message_to_client(server_protocol_t* protocol, char* mes) {
 int show_board_to_client(server_protocol_t* protocol) {
 	int matrix[9][9];
 	sudoku_show_board(&protocol->sudoku, matrix);
-	char board_representation[722];
-	assemble_board_representation(board_representation, matrix);
+	char board_representation[723];
+	assemble_board_representation(board_representation, matrix); //Hasta aca llego todo joya, seguir debuggeando!!!!!!!
 	return send_message_to_client(protocol, board_representation);
 }
 	
@@ -139,4 +141,5 @@ uint32_t calculate_str_len(char* str) {
 		len += 1;
 		i++;
 	}
+	return len;
 }

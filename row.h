@@ -16,4 +16,6 @@ bool row_is_valid(row_t* row);
 
 void row_restart_cells(row_t* row);
 
+void row_show_cells(row_t* row, int* ptr);
+
 #endif

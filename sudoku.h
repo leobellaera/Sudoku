@@ -19,4 +19,6 @@ int sudoku_verify(sudoku_t* sudoku);
 
 void sudoku_restart(sudoku_t* sudoku);
 
+void sudoku_show_board(sudoku_t* sudoku, int matrix[9][9]);
+
 #endif
