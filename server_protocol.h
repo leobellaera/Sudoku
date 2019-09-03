@@ -13,4 +13,6 @@ int server_protocol_init(server_protocol_t* protocol, const char* port, int matr
 
 int server_protocol_process(server_protocol_t* protocol);
 
+void server_protocol_release(server_protocol_t* protocol);
+
 #endif

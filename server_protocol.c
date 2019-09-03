@@ -29,6 +29,10 @@ int server_protocol_init(server_protocol_t* protocol, const char* port, int matr
 	return 0;
 }
 
+void server_protocol_release(server_protocol_t* protocol) {
+	server_release(&protocol->sv);
+}
+
 int server_protocol_process(server_protocol_t* protocol) {
 	char buffer;
 	if (server_recv_message(&protocol->sv, &buffer, 1)) {
@@ -108,28 +112,26 @@ int send_valid_board_message(server_protocol_t* protocol) {
 
 
 int send_message_to_client(server_protocol_t* protocol, char* mes) {
-	uint32_t mes_len = htonl(calculate_str_len(mes));
-	int length = snprintf(NULL, 0, "%d", mes_len);
-	char* buffer = malloc( length + 1 );
-	snprintf(buffer, length + 1, "%d", mes_len);
-
-	if (server_send_message(&protocol->sv, buffer, 4) == 1) {
+	uint32_t len = calculate_str_len(mes);
+	uint32_t len_ton = htonl(len);
+	if (server_send_message(&protocol->sv, (char*)&len_ton, 4)) {
+		free(mes);
 		return 1;
 	}
-	for (int i = 0; i < mes_len; i++) {
-		if (server_send_message(&protocol->sv, &mes[i], 1) == 1) {
+	for (int i = 0; i < len; i++) {
+		if (server_send_message(&protocol->sv, &mes[i], 1)) {
+			free(mes);
 			return 1;
 		}
 	}
-	free(buffer);
+	free(mes);
 	return 0;
 }
 
 int show_board_to_client(server_protocol_t* protocol) {
 	int matrix[9][9];
 	sudoku_show_board(&protocol->sudoku, matrix);
-	char board_representation[723];
-	assemble_board_representation(board_representation, matrix);
+	char* board_representation = assemble_board_representation(matrix);
 	return send_message_to_client(protocol, board_representation);
 }
 	

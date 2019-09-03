@@ -1,12 +1,15 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#define BOARD_REPR_SIZE 723
 
 void add_sector_separator(char* buffer);
 void add_normal_separator(char* buffer);
 void add_matrix_row(char* buffer, int matrix[9][9], int row_index);
 void iterate_row_representation(char* row_representation, int* row, int len);
 
-void assemble_board_representation(char* board_representation, int matrix[9][9]) {
+char* assemble_board_representation(int matrix[9][9]) {
+	char* board_representation = malloc(sizeof(char)*BOARD_REPR_SIZE);
 	int matrix_row_index = 0;
 	for (int i = 0; i < 19; i++) {
 		int actual_index = i*38;
@@ -21,7 +24,8 @@ void assemble_board_representation(char* board_representation, int matrix[9][9])
 			matrix_row_index += 1;
 		}
 	}
-	board_representation[722] = '\0'; //to check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+	board_representation[722] = '\0';
+	return board_representation;
 }
 
 void add_sector_separator(char* buffer) {

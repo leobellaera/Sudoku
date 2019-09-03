@@ -1,11 +1,15 @@
 #include "server_protocol.h"
-#include "client.h"
+#include "client_protocol.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 
 int main(int argc, char* argv[]){
+
+	if (argc < 2) {
+		return 1;
+	}
 
 	int m[9][9] = {
         {0,0,1,0,0,0,0,3,5},
@@ -20,28 +24,26 @@ int main(int argc, char* argv[]){
 	};
 
 	if (strcmp(argv[1], "server") == 0) {
-		printf("Server mode\n");
+		printf("Server\n\n");
 		server_protocol_t sv_protocol;
 		server_protocol_init(&sv_protocol, "7777", m);
-		char str[11];
-		printf("Enter a new command: ");
-		fgets(str, 10, stdin);
-		printf("%s\n", str);
-		server_protocol_process(&sv_protocol);
+		while (1) {
+			if (server_protocol_process(&sv_protocol) == 1) {
+				server_protocol_release(&sv_protocol);
+				return 0;
+			}
+		}
 
 	}
 
 	else if (strcmp(argv[1], "client") == 0) {
-		printf("Client mode\n");
-		client_t cliente;
-		client_init(&cliente, "localhost", "7777");
-		char mess = 'G';
-		client_send_message(&cliente, &mess, 1);
-		char aux[4];
-		char buff[723];
-		client_recv_message(&cliente, aux, 4);
-		client_recv_message(&cliente, buff, 723);
-		printf("%s", buff);
+		printf("Client\n\n");
+		client_protocol_t client;
+		client_protocol_init(&client, "localhost", "7777");
+		while (1) {
+			client_protocol_process_input(&client);
+		}		
+		
 	}
 
 	return 0;
