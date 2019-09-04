@@ -27,7 +27,7 @@ void make_protocol_message(char* input, char* message) {
 		message[0] = 'R';
 	}
 	else if (strcmp("verify", input) == 0) {
-		message[0] = 'G';
+		message[0] = 'V';
 	}
 	else {
 		message[0] = 'P';
