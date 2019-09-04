@@ -26,7 +26,9 @@ int main(int argc, char* argv[]){
 	if (strcmp(argv[1], "server") == 0) {
 		printf("Server\n\n");
 		server_protocol_t sv_protocol;
-		server_protocol_init(&sv_protocol, "7777", m);
+		if (server_protocol_init(&sv_protocol, "7777", m) == 1) {
+			return 1;
+		}
 		while (1) {
 			if (server_protocol_process(&sv_protocol) == 1) {
 				server_protocol_release(&sv_protocol);

@@ -19,18 +19,9 @@ int main() {
 
 	sudoku_t sudoku;
 	sudoku_init(&sudoku, m);
-	if (sudoku_put(&sudoku, 9, 1, 1)) {
+	if (sudoku_put(&sudoku, 6, 1, 1)) {
 		printf("CELDA NO MODIFICABLE!\n");
 	}
-
-	sector_print(&(&sudoku)->sectors[0][2]);
-	printf("\n");
-	sudoku_put(&sudoku, 9, 0, 8);
-	sector_print(&(&sudoku)->sectors[0][2]);
-	printf("\n");
-	sudoku_put(&sudoku, 3, 0, 6);
-	sector_print(&(&sudoku)->sectors[0][2]);
-	printf("\n");
 
 	if (sudoku_verify(&sudoku)) {
 		printf("NO CUMPLE REGLAS!\n");
@@ -43,9 +34,9 @@ int main() {
 	printf("\n");
 	int aux[9][9];
 	sudoku_show_board(&sudoku, aux);
-	char buff[723];
-	assemble_board_representation(buff, aux);
-	//printf("%s", buff);
+	char* board = assemble_board_representation(aux);
+	printf("%s\n", board);
+	free(board);
 
 	return 0;
 }

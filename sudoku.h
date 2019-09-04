@@ -1,14 +1,10 @@
 #ifndef _SUDOKU_H_
 #define _SUDOKU_H_
 
-#include "column.h"
-#include "row.h"
-#include "sector.h"
+#include "cell.h"
 
 typedef struct sudoku {
-	row_t rows[9];
-	column_t columns[9];
-	sector_t sectors[3][3]; //sectors matrix
+	cell_t board[9][9];
 } sudoku_t;
 
 void sudoku_init(sudoku_t* sudoku, int matrix[9][9]);

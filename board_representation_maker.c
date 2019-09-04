@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define BOARD_REPR_SIZE 723
+#define BOARD_REPR_ROWS 19
 
 void add_sector_separator(char* buffer);
 void add_normal_separator(char* buffer);
@@ -11,7 +12,7 @@ void iterate_row_representation(char* row_representation, int* row, int len);
 char* assemble_board_representation(int matrix[9][9]) {
 	char* board_representation = malloc(sizeof(char)*BOARD_REPR_SIZE);
 	int matrix_row_index = 0;
-	for (int i = 0; i < 19; i++) {
+	for (int i = 0; i < BOARD_REPR_ROWS; i++) {
 		int actual_index = i*38;
 		if (i % 6 == 0) {
 			add_sector_separator(&board_representation[actual_index]);
@@ -24,7 +25,7 @@ char* assemble_board_representation(int matrix[9][9]) {
 			matrix_row_index += 1;
 		}
 	}
-	board_representation[722] = '\0';
+	board_representation[BOARD_REPR_SIZE-1] = '\0';
 	return board_representation;
 }
 

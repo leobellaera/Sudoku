@@ -1,5 +1,5 @@
 #include "client_protocol.h"
-#include "protocol_input_parser.h"
+#include "protocol_message_parser.h"
 #include <stdio.h>
 #include <arpa/inet.h>
 #define FGETS_SIZE 14
@@ -50,7 +50,7 @@ int process_command(client_protocol_t* protocol, char* input) {
 	if (strcmp("exit\n", input) == 0) {
 		return process_exit_command(protocol);
 	}
-	char* message = parse_input_to_message(input);
+	char* message = parse_command_to_message(input);
 	if (send_command_message(protocol, message, strlen(message))) {
 		return 1;
 	}
