@@ -8,15 +8,16 @@
 #define EXIT_COMMAND "exit"
 
 #define FGETS_SIZE 14
+
 #define SUCCESS 0
 #define ERROR 1
 #define EXIT 2
 #define INVALID_COMMAND 3
 
-int get_user_input(char* input);
+int process_user_input(char* input);
 int execute_command(client_protocol_t* protocol, char* command);
-void print_if_invalid_command(char* input);
-void print_if_invalid_args(char* input);
+bool command_has_invalid_indexes(char* input);
+bool command_has_invalid_values(char* input);
 char* get_command(char* input);
 
 int user_interface_init(user_interface_t* user_interface, const char* host, const char* service) {
@@ -31,17 +32,21 @@ int user_interface_init(user_interface_t* user_interface, const char* host, cons
 //executes the command and releases resources if necessary.
 //Returns 1 if ERROR or 0 if SUCCESS
 
-int user_interface_process(user_interface_t* user_interface) {
-	char input[FGETS_SIZE];
-	if (get_user_input(input) == ERROR) {
+int user_interface_process(user_interface_t* user_interface) { //
+	char buffer[FGETS_SIZE];
+	int input_state = process_user_input(buffer);
+	if (input_state == EOF) {
 		client_release(&user_interface->client);
 		return ERROR;
 	}
-	if (strcmp(input, EXIT_COMMAND) == 0) {
+	if (input_state == INVALID_COMMAND) {
+		return SUCCESS;
+	}
+	if (strcmp(buffer, EXIT_COMMAND) == 0) {
 		client_release(&user_interface->client);
 		return EXIT;
 	}
-	if (execute_command(&user_interface->protocol, input)) {
+	if (execute_command(&user_interface->protocol, buffer)) {
 		client_release(&user_interface->client);
 		return ERROR;
 	}
@@ -66,32 +71,29 @@ int execute_command(client_protocol_t* protocol, char* command) {
 
 //Asks user for input. Returns 1 if eof or invalid input, 0 in other case
 
-int get_user_input(char* input) {
+int process_user_input(char* input) {
 	printf("Ingresá un comando: ");
 	if (!fgets(input, FGETS_SIZE, stdin)) {
-		return ERROR;
+		return EOF;
 	}
 	input[strlen(input) - 1] = '\0'; //replace '\n' with '\0'
-	print_if_invalid_command(input);
-	print_if_invalid_args(input);
+	if (command_has_invalid_indexes(input)) {
+		printf("​Error en los índices. Rango soportado: [1,9]\n​");
+		return INVALID_COMMAND;
+	}
+	else if (command_has_invalid_values(input)) {
+		printf("​Error en el valor ingresado. Rango soportado: [1,9]\n​");
+		return INVALID_COMMAND;
+	}
 	return SUCCESS;
 }
 
-void print_if_invalid_command(char* input) {
-	const char* invalid_command_message = "El comando ingresado es inválido\n";
-	const char *valid_commands[5] = {"put", "verify", "reset", "get", "exit"};
-	char* command = get_command(input);
-	for (int i = 0; i < 5; i++) {
-		if (strcmp(command, valid_commands[i]) == 0) {
-			free(command);
-			return;
-		}
-	}
-	printf("%s", invalid_command_message);
+bool command_has_invalid_indexes(char* input) {
+	return false;
 }
 
-void print_if_invalid_args(char* input) {
-	
+bool command_has_invalid_values(char* input) {
+	return false;
 }
 
 char* get_command(char* input) {

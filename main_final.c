@@ -43,13 +43,14 @@ int main(int argc, char* argv[]){
 
 	else if (strcmp(argv[1], "client") == 0) {
 		user_interface_t user_interface;
-		if (user_interface_init(&user_interface, "localhost", "7777")) {
-		}
+		user_interface_init(&user_interface, "localhost", "7777");
+		int state;
 		while (1) {
-			if (user_interface_process(&user_interface) == ERROR) {
+			state = user_interface_process(&user_interface);
+			if (state == ERROR) {
 				return 1;
 			}
-			else if (user_interface_process(&user_interface) == EXIT) {
+			else if (state == EXIT) {
 				return 0;
 			}
 		}		
