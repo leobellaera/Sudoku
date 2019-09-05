@@ -4,11 +4,13 @@
 #include "client.h"
 
 typedef struct {
-	client_t client;
+	client_t* client;
 } client_protocol_t;
 
-int client_protocol_init(client_protocol_t* protocol, const char* host, const char* service);
+void client_protocol_init(client_protocol_t* protocol, client_t* client);
 
-int client_protocol_process_input(client_protocol_t* protocol);
+int client_protocol_send_message(client_protocol_t* protocol, char* command);
+
+char* client_protocol_recv_answer(client_protocol_t* protocol);
 
 #endif

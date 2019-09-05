@@ -1,9 +1,13 @@
 #include "server_protocol.h"
-#include "client_protocol.h"
+#include "user_interface.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+
+#define EXIT 2
+#define ERROR 1
+#define SUCCESS 0
 
 int main(int argc, char* argv[]){
 
@@ -24,7 +28,6 @@ int main(int argc, char* argv[]){
 	};
 
 	if (strcmp(argv[1], "server") == 0) {
-		printf("Server\n\n");
 		server_protocol_t sv_protocol;
 		if (server_protocol_init(&sv_protocol, "7777", m) == 1) {
 			return 1;
@@ -39,11 +42,16 @@ int main(int argc, char* argv[]){
 	}
 
 	else if (strcmp(argv[1], "client") == 0) {
-		printf("Client\n\n");
-		client_protocol_t client;
-		client_protocol_init(&client, "localhost", "7777");
+		user_interface_t user_interface;
+		if (user_interface_init(&user_interface, "localhost", "7777")) {
+		}
 		while (1) {
-			client_protocol_process_input(&client);
+			if (user_interface_process(&user_interface) == ERROR) {
+				return 1;
+			}
+			else if (user_interface_process(&user_interface) == EXIT) {
+				return 0;
+			}
 		}		
 		
 	}

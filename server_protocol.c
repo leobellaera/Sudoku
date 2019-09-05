@@ -117,7 +117,7 @@ int process_v_message(server_protocol_t* protocol) {
 }
 
 int send_invalid_board_message(server_protocol_t* protocol) {
-	char mes[] = "Board state is invalid\n";
+	char* mes = "El estado del juego no es válido\n​";
 	if (send_message_to_client(protocol, mes) == 1) {
 		return 1;
 	}
@@ -125,7 +125,7 @@ int send_invalid_board_message(server_protocol_t* protocol) {
 }
 
 int send_valid_board_message(server_protocol_t* protocol) {
-	char mes[] = "OK\n";
+	char* mes = "OK\n";
 	if (send_message_to_client(protocol, mes) == 1) {
 		return 1;
 	}
