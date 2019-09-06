@@ -26,15 +26,16 @@ void socket_release(socket_t* skt) {
 int socket_connect(socket_t* skt, const char* host, const char* service) {
 	struct addrinfo *result = NULL;
 	int s = socket_getaddrinfo(&result, host, service, false);
-
 	if (s != 0) { 
     	fprintf(stderr, "Error in getaddrinfo: %s\n", gai_strerror(s));
+    	freeaddrinfo(result);
     	return 1;
     }
     bool connection_established = false;
     socket_addr_iterate(skt, result, &connection_established);
     if (!connection_established) {
     	fprintf(stderr, "Error: connection couldn't been established\n");
+    	freeaddrinfo(result);
     	return 1;
     }
 	freeaddrinfo(result);

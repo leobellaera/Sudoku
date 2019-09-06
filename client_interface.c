@@ -70,7 +70,7 @@ int execute_command(client_protocol_t* protocol, char* command) {
 	if (!sv_ans) {
 		return ERROR;
 	}
-	printf("%s\n", sv_ans);
+	printf("%s", sv_ans);
 	free(sv_ans);
 	return SUCCESS;
 }
@@ -144,7 +144,6 @@ char* get_command_first_arg(char* input) {
 }
 
 bool index_is_allowed(char* index) {
-	printf("%s\n", index);
 	int idx = atoi(index);
 	if (idx > 9 || idx < 1) {
 		return false;
@@ -153,7 +152,6 @@ bool index_is_allowed(char* index) {
 }
 
 bool value_is_allowed(char* value) {
-	printf("%s\n", value);
 	int v = atoi(value);
 	if (v > 9 || v < 1) {
 		return false;

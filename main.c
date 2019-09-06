@@ -1,47 +1,31 @@
-#include "server_interface.h"
-#include "client_interface.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include "sudoku_interface.h"
 
-#define EXIT 2
-#define ERROR 1
 #define SUCCESS 0
+#define ERROR 1
+#define EXIT 2
+
+//REEMPLAZAR GET_COMMAND POR SSCANF!!!!!!!!!!!!!!!!
+//CAMBIAR NOMBRE SERVER Y CLIENT POR SERVER_SOCKET Y CLIENT_SOCKET
+//DIVIDIR BIND AND LISTEN!!!
 
 int main(int argc, char* argv[]){
 
-	if (strcmp(argv[1], "server") == 0) {
-		server_interface_t sv_interface;
-		if (server_interface_init(&sv_interface, "7777")) {
-			return 1;
-		}
-		while (1) {
-			if (server_interface_process(&sv_interface)) {
-				return 1;
-			}
-		}
+	sudoku_interface_t sudoku_interface;
 
+	int game_init = sudoku_interface_init(&sudoku_interface, argc, argv);
+	if (game_init == ERROR) {
+		return 1;
 	}
 
-	else if (strcmp(argv[1], "client") == 0) {
-		client_interface_t client_interface;
-		if (client_interface_init(&client_interface, "localhost", "7777")) {
-			return 1;
+	int execution;
+	while(1) {
+		execution = sudoku_interface_execute(&sudoku_interface);
+		if (execution == EXIT) {
+			return SUCCESS;
 		}
-		int state;
-		while (1) {
-			state = client_interface_process(&client_interface);
-			if (state == ERROR) {
-				return 1;
-			}
-			else if (state == EXIT) {
-				return 0;
-			}
-		}		
-		
-	}
-
+		else if (execution == ERROR) {
+			return ERROR;
+		}
+ 	}
 	return 0;
-
 }
