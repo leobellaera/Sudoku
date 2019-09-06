@@ -10,6 +10,15 @@
 #define PUT_COL_BUFFER_IDX 1
 #define PUT_NUMB_BUFFER_IDX 2
 
+#define PUT_COMMAND_MES 'P'
+#define VERIFY_COMMAND_MES 'V'
+#define RESET_COMMAND_MES 'R'
+#define GET_COMMAND_MES 'G'
+
+#define UNMODIFIABLE_CELL_MES "La celda indicada no es modificable\n​"
+#define INVALID_BOARD_MES "​ERROR\n​"
+#define VALID_BOARD_MES "OK\n"
+
 //forward declarations
 
 uint32_t calculate_str_len(char* str);
@@ -56,13 +65,13 @@ int server_protocol_process(server_protocol_t* protocol) {
 }
 
 int process_message(server_protocol_t* protocol, char message) {
-	if (message == 'P') {
+	if (message == PUT_COMMAND_MES) {
 		return process_p_message(protocol);
 	}
-	else if (message == 'G') {
+	else if (message == GET_COMMAND_MES) {
 		return process_g_message(protocol);
 	}
-	else if (message == 'R') {
+	else if (message == RESET_COMMAND_MES) {
 		return process_r_message(protocol);
 	}
 	else {
@@ -89,8 +98,7 @@ int process_p_message(server_protocol_t* protocol) {
 }
 
 int send_unmodifiable_cell_message(server_protocol_t* protocol) {
-	char mes[] = "La celda indicada no es modificable\n​";
-	if (send_message_to_client(protocol, mes) == 1) {
+	if (send_message_to_client(protocol, UNMODIFIABLE_CELL_MES) == 1) {
 		return 1;
 	}
 	return 0;
@@ -117,16 +125,14 @@ int process_v_message(server_protocol_t* protocol) {
 }
 
 int send_invalid_board_message(server_protocol_t* protocol) {
-	char* mes = "​ERROR\n​";
-	if (send_message_to_client(protocol, mes) == 1) {
+	if (send_message_to_client(protocol, INVALID_BOARD_MES) == 1) {
 		return 1;
 	}
 	return 0;
 }
 
 int send_valid_board_message(server_protocol_t* protocol) {
-	char* mes = "OK\n";
-	if (send_message_to_client(protocol, mes) == 1) {
+	if (send_message_to_client(protocol, VALID_BOARD_MES) == 1) {
 		return 1;
 	}
 	return 0;
