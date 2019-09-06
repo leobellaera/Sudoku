@@ -84,11 +84,11 @@ int process_user_input(char* input) {
 	}
 	input[strlen(input) - 1] = '\0'; //replace '\n' with '\0'
 	if (!command_has_valid_indexes(input)) {
-		fprintf(stdout, INDEX_ERROR_MES);
+		fprintf(stderr, INDEX_ERROR_MES);
 		return INVALID_COMMAND;
 	}
 	else if (!command_has_valid_values(input)) {
-		fprintf(stdout, VALUE_ERROR_MES);
+		fprintf(stderr, VALUE_ERROR_MES);
 		return INVALID_COMMAND;
 	}
 	return SUCCESS;
