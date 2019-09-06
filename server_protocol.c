@@ -15,9 +15,9 @@
 #define RESET_COMMAND_MES 'R'
 #define GET_COMMAND_MES 'G'
 
-#define UNMODIFIABLE_CELL_MES "La celda indicada no es modificable\n​"
-#define INVALID_BOARD_MES "​ERROR\n​"
-#define VALID_BOARD_MES "OK\n"
+#define VALID_BOARD_MSG "OK\n"
+#define INVALID_BOARD_MSG "ERROR\n"
+#define UNMODIFIABLE_CELL_MSG "La celda indicada no es modificable\n​"
 
 //forward declarations
 
@@ -88,7 +88,7 @@ int process_p_message(server_protocol_t* protocol) {
 }
 
 int send_unmodifiable_cell_message(server_protocol_t* protocol) {
-	if (send_message_to_client(protocol, UNMODIFIABLE_CELL_MES) == 1) {
+	if (send_message_to_client(protocol, UNMODIFIABLE_CELL_MSG) == 1) {
 		return 1;
 	}
 	return 0;
@@ -115,30 +115,15 @@ int process_v_message(server_protocol_t* protocol) {
 }
 
 int send_invalid_board_message(server_protocol_t* protocol) {
-	if (send_message_to_client(protocol, INVALID_BOARD_MES) == 1) {
+	if (send_message_to_client(protocol, INVALID_BOARD_MSG) == 1) {
 		return 1;
 	}
 	return 0;
 }
 
 int send_valid_board_message(server_protocol_t* protocol) {
-	if (send_message_to_client(protocol, VALID_BOARD_MES) == 1) {
+	if (send_message_to_client(protocol, VALID_BOARD_MSG) == 1) {
 		return 1;
-	}
-	return 0;
-}
-
-
-int send_message_to_client(server_protocol_t* protocol, char* mes) {
-	uint32_t len = calculate_str_len(mes);
-	uint32_t len_ton = htonl(len);
-	if (server_send_message(protocol->server, (char*)&len_ton, 4)) {
-		return 1;
-	}
-	for (int i = 0; i < len; i++) {
-		if (server_send_message(protocol->server, &mes[i], 1)) {
-			return 1;
-		}
 	}
 	return 0;
 }
@@ -147,17 +132,29 @@ int show_board_to_client(server_protocol_t* protocol) {
 	int matrix[9][9];
 	sudoku_show_board(protocol->sudoku, matrix);
 	char* board_representation = assemble_board_representation(matrix);
-	int err = send_message_to_client(protocol, board_representation);
+	int error = send_message_to_client(protocol, board_representation);
 	free(board_representation);
-	return (err == 1);
+	return error;
+}
+
+int send_message_to_client(server_protocol_t* protocol, char* msg) {
+	uint32_t len = calculate_str_len(msg);
+	uint32_t len_ton = htonl(len);
+	if (server_send_message(protocol->server, (char*)&len_ton, 4)) {
+		return 1;
+	}
+	for (int i = 0; i < len; i++) {
+		if (server_send_message(protocol->server, &msg[i], 1)) {
+			return 1;
+		}
+	}
+	return 0;
 }
 	
 uint32_t calculate_str_len(char* str) {
-	uint32_t len = 0;
-	int i = 0;
+	uint32_t i = 0;
 	while (str[i] != '\0') {
-		len += 1;
 		i++;
 	}
-	return len;
+	return i;
 }
