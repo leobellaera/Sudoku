@@ -9,10 +9,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
-
 #include <stdbool.h>
 
-void socket_addr_iterate(socket_t* skt, struct addrinfo* result);
+void socket_addr_iterate(socket_t* skt, struct addrinfo* result, bool* connection_established);
 int socket_getaddrinfo(struct addrinfo **result, const char* host, const char* service, bool pasive);
 
 void socket_init(socket_t* socket) {
@@ -32,11 +31,12 @@ int socket_connect(socket_t* skt, const char* host, const char* service) {
     	fprintf(stderr, "Error in getaddrinfo: %s\n", gai_strerror(s));
     	return 1;
     }
-
-    socket_addr_iterate(skt, result);
-    if (skt->fd == -1) {
+    bool connection_established = false;
+    socket_addr_iterate(skt, result, &connection_established);
+    if (!connection_established) {
+    	fprintf(stderr, "Error: connection couldn't been established\n");
     	return 1;
-    } 
+    }
 	freeaddrinfo(result);
 	return 0;
 }
@@ -87,67 +87,42 @@ int socket_accept_client(socket_t* sv_skt, socket_t* peer_skt) {
 	return 0;
 }
 
-
+//Returns bytes received if message was received successfully and -1 in error case.
 int socket_recv_message(socket_t* skt, char *buf, int size){
 	int received = 0;
 	int s = 0;
-	bool valid_skt = true;
-
-	while (received < size && valid_skt) {
+	while (received < size) {
 		s = recv(skt->fd, &buf[received], size-received, MSG_NOSIGNAL);
-
-		if (s == 0) { //the socket was closed
-			valid_skt = false;
-		}
-		else if (s == -1) { //error
-			valid_skt = false;
+		if (s == 0 || s == -1) { //the socket was closed
+			return -1;
 		}
 		else {
          received += s;
 		}
 	}
-
-	if (valid_skt) {
-		return received;
-	}
-	else {
-		return -1;
-	}
+	return received;
 }
 
+//Returns bytes sent if message was sent successfully and -1 in error case.
 int socket_send_message(socket_t* skt, char *buf, int size){
-
 	int sent = 0;
 	int s = 0;
-	bool valid_skt = true;
-
-	while (sent < size && valid_skt) {
+	while (sent < size) {
 		s = send(skt->fd, &buf[sent], size-sent, MSG_NOSIGNAL);
-
-		if (s == 0) {
-			valid_skt = false;
-		}
-		else if (s == -1) {
-			valid_skt = false;
+		if (s == 0 || s == -1) { //socket was closed or error occurred
+			return -1;
 		}
 		else {
 			sent += s;
 		}
 	}
-
-	if (valid_skt) {
-		return sent;
-	}
-	else {
-		return -1;
-	}
+	return sent;
 }
 
-void socket_addr_iterate(socket_t* skt, struct addrinfo* result) {
+void socket_addr_iterate(socket_t* skt, struct addrinfo* result, bool* connection_established) {
 	struct addrinfo* ptr;
-	bool connection_established = false;
 	int s;
-	for (ptr = result; ptr != NULL && connection_established == false; ptr = ptr->ai_next) {
+	for (ptr = result; ptr != NULL && *connection_established == false; ptr = ptr->ai_next) {
 		skt->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if (skt->fd == -1) {
 			fprintf(stderr, "Error: %s\n", strerror(errno));
@@ -158,7 +133,7 @@ void socket_addr_iterate(socket_t* skt, struct addrinfo* result) {
             	fprintf(stderr, "Error: %s\n", strerror(errno));
             	close(skt->fd);
         	}
-			connection_established = (s != -1); //are we connected now?
+			*connection_established = (s != -1); //are we connected now?
 		}
 	}
 	

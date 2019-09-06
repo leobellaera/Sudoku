@@ -1,5 +1,5 @@
 #include "server_interface.h"
-#include "user_interface.h"
+#include "client_interface.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,11 +25,13 @@ int main(int argc, char* argv[]){
 	}
 
 	else if (strcmp(argv[1], "client") == 0) {
-		user_interface_t user_interface;
-		user_interface_init(&user_interface, "localhost", "7777");
+		client_interface_t client_interface;
+		if (client_interface_init(&client_interface, "localhost", "7777")) {
+			return 1;
+		}
 		int state;
 		while (1) {
-			state = user_interface_process(&user_interface);
+			state = client_interface_process(&client_interface);
 			if (state == ERROR) {
 				return 1;
 			}

@@ -1,4 +1,4 @@
-#include "user_interface.h"
+#include "client_interface.h"
 #include "client_protocol.h"
 #include <string.h>
 #include <stdbool.h>
@@ -26,11 +26,11 @@ char* get_command_first_arg(char* input);
 bool index_is_allowed(char* index);
 bool value_is_allowed(char* value);
 
-int user_interface_init(user_interface_t* user_interface, const char* host, const char* service) {
-	if (client_init(&user_interface->client, host, service)) {
+int client_interface_init(client_interface_t* client_interface, const char* host, const char* service) {
+	if (client_init(&client_interface->client, host, service)) {
 		return ERROR;
 	}
-	client_protocol_init(&user_interface->protocol, &user_interface->client);
+	client_protocol_init(&client_interface->protocol, &client_interface->client);
 	return SUCCESS;
 }
 
@@ -38,22 +38,22 @@ int user_interface_init(user_interface_t* user_interface, const char* host, cons
 //executes the command and releases resources if necessary.
 //Returns 1 if ERROR or 0 if SUCCESS
 
-int user_interface_process(user_interface_t* user_interface) { //
+int client_interface_process(client_interface_t* client_interface) { //
 	char buffer[FGETS_SIZE];
 	int input_state = process_user_input(buffer);
 	if (input_state == EOF) {
-		client_release(&user_interface->client);
+		client_release(&client_interface->client);
 		return ERROR;
 	}
 	if (input_state == INVALID_COMMAND) {
 		return SUCCESS;
 	}
 	if (strcmp(buffer, EXIT_COMMAND) == 0) {
-		client_release(&user_interface->client);
+		client_release(&client_interface->client);
 		return EXIT;
 	}
-	if (execute_command(&user_interface->protocol, buffer)) {
-		client_release(&user_interface->client);
+	if (execute_command(&client_interface->protocol, buffer)) {
+		client_release(&client_interface->client);
 		return ERROR;
 	}
 	return SUCCESS;
