@@ -8,8 +8,13 @@
 #define ERROR 1
 #define EXIT 2
 
+#define UNSOPPORTED_MODE_MSG "Modo no soportado, el primer parámetro debe ser server o client\n​"
+#define SV_MODE_WRONG_USE_MSG "Uso: ./tp server <puerto>\n​"
+#define CL_MODE_WRONG_USE_MSG "Uso: ./tp client <host> <puerto>\n​"
+
 int check_arguments(int argc, char* argv[]);
 int init_mode_executed(sudoku_interface_t* sudoku_interface, char* argv[]);
+bool first_argument_unsopported(char* arg);
 
 int sudoku_interface_init(sudoku_interface_t* sudoku_interface, int argc, char* argv[]){
 	if (check_arguments(argc, argv) == ERROR) {
@@ -56,5 +61,26 @@ int sudoku_interface_execute(sudoku_interface_t* sudoku_interface) {
 }
 
 int check_arguments(int argc, char* argv[]) {
+	if (argc < 2 || first_argument_unsopported(argv[1])) {
+		fprintf(stderr, UNSOPPORTED_MODE_MSG);
+		return ERROR;
+	}
+	if ((strcmp(argv[1], "server") == 0) && (argc != 3)) {
+		fprintf(stderr, SV_MODE_WRONG_USE_MSG);
+		return ERROR;
+	}
+	if ((strcmp(argv[1], "client") == 0) && (argc != 4)) {
+		fprintf(stderr, CL_MODE_WRONG_USE_MSG);
+		return ERROR;
+	}
 	return SUCCESS;
+}
+
+bool first_argument_unsopported(char* arg) {
+	int sv_cmp = strcmp(arg, "server");
+	int cl_cmp = strcmp(arg, "client");
+	if (sv_cmp != 0 && cl_cmp != 0) {
+		return true;
+	}
+	return false;
 }
