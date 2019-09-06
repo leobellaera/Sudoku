@@ -9,6 +9,7 @@
 #define PUT_COMMAND "put"
 
 #define FGETS_SIZE 25
+#define COMMAND_MAX_SIZE 15
 
 #define SUCCESS 0
 #define ERROR 1
@@ -22,7 +23,7 @@ int process_user_input(char* input);
 int execute_command(client_protocol_t* protocol, char* command);
 bool command_has_valid_indexes(char* input);
 bool command_has_valid_values(char* input);
-char* get_command_first_arg(char* input);
+void get_command_first_arg(char* buffer, char* input);
 bool index_is_allowed(char* index);
 bool value_is_allowed(char* value);
 
@@ -96,51 +97,41 @@ int process_user_input(char* input) {
 //Checks if command indexes are allowed. 
 
 bool command_has_valid_indexes(char* input) {
-	char* command_first_arg = get_command_first_arg(input);
+	char command_first_arg[COMMAND_MAX_SIZE];
+	get_command_first_arg(command_first_arg, input);
 	if (strcmp(command_first_arg, PUT_COMMAND) == 0) {
 		char index_a[4], index_b[4];
 		index_a[3] = '\0';
 		index_b[3] = '\0';
 		sscanf(input, "%*s %*s %*s %3[^,]%*[, ]%3s", index_a, index_b); //scan of put indexes
 		if (!index_is_allowed(index_a) || !index_is_allowed(index_b)) {
-			free(command_first_arg);
 			return false;
 		}
 	}
-	free(command_first_arg);
 	return true;
 }
 
 //Checks if command values are allowed.
 
 bool command_has_valid_values(char* input) {
-	char* command_first_arg = get_command_first_arg(input);
+	char command_first_arg[COMMAND_MAX_SIZE];
+	get_command_first_arg(command_first_arg, input);
 	if (strcmp(command_first_arg, PUT_COMMAND) == 0) {
 		char value[4];
 		value[3] = '\0';
 		sscanf(input, "%*s %3s", value); //scan of put value
 		if (!value_is_allowed(value)) {
-			free(command_first_arg);
 			return false;
 		}
 	}
-	free(command_first_arg);
 	return true;
 }
 
 //Finds and returns command first argument.
 
-char* get_command_first_arg(char* input) {
-	int i = 0;
-	while (input[i] != '\0' && input[i] != ' ') {
-		i++;
-	}
-	char* command = malloc(sizeof(char)* i + 1);
-	command[i] = '\0';
-	for (int j = 0; j < i; j++) {
-		command[j] = input[j];
-	}
-	return command;
+void get_command_first_arg(char* buffer, char* input) {
+	sscanf(input, "%14s", buffer);
+	buffer[COMMAND_MAX_SIZE - 1] = '\0'; 
 }
 
 bool index_is_allowed(char* index) {
