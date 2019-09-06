@@ -75,7 +75,7 @@ int execute_command(client_protocol_t* protocol, char* command) {
 	return SUCCESS;
 }
 
-//Asks user for input. Returns 1 if eof or invalid input, 0 in other case
+//Asks user for input and checks user input. Returns 1 if eof or invalid input, 0 in other case
 
 int process_user_input(char* input) {
 	if (!fgets(input, FGETS_SIZE, stdin)) {
@@ -93,6 +93,8 @@ int process_user_input(char* input) {
 	return SUCCESS;
 }
 
+//Checks if command indexes are allowed. 
+
 bool command_has_valid_indexes(char* input) {
 	char* command_first_arg = get_command_first_arg(input);
 	if (strcmp(command_first_arg, PUT_COMMAND) == 0) {
@@ -109,6 +111,8 @@ bool command_has_valid_indexes(char* input) {
 	return true;
 }
 
+//Checks if command values are allowed.
+
 bool command_has_valid_values(char* input) {
 	char* command_first_arg = get_command_first_arg(input);
 	if (strcmp(command_first_arg, PUT_COMMAND) == 0) {
@@ -123,6 +127,8 @@ bool command_has_valid_values(char* input) {
 	free(command_first_arg);
 	return true;
 }
+
+//Finds and returns command first argument.
 
 char* get_command_first_arg(char* input) {
 	int i = 0;
