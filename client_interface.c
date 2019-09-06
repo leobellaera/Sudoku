@@ -16,8 +16,8 @@
 #define EXIT 2
 #define INVALID_COMMAND 3
 
-#define INDEX_ERROR_MES "​Error en los índices. Rango soportado: [1,9]\n​"
-#define VALUE_ERROR_MES "​Error en el valor ingresado. Rango soportado: [1,9]\n​"
+#define INDEX_ERROR_MES "Error en los índices. Rango soportado: [1,9]"
+#define VALUE_ERROR_MES "Error en el valor ingresado. Rango soportado: [1,9]"
 
 int process_user_input(char* input);
 int execute_command(client_protocol_t* protocol, char* command);
@@ -84,11 +84,11 @@ int process_user_input(char* input) {
 	}
 	input[strlen(input) - 1] = '\0'; //replace '\n' with '\0'
 	if (!command_has_valid_indexes(input)) {
-		fprintf(stderr, INDEX_ERROR_MES);
+		fprintf(stderr, "%s\n" , INDEX_ERROR_MES);
 		return INVALID_COMMAND;
 	}
 	else if (!command_has_valid_values(input)) {
-		fprintf(stderr, VALUE_ERROR_MES);
+		fprintf(stderr, "%s\n", VALUE_ERROR_MES);
 		return INVALID_COMMAND;
 	}
 	return SUCCESS;
