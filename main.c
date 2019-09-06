@@ -1,4 +1,4 @@
-#include "server_protocol.h"
+#include "server_interface.h"
 #include "user_interface.h"
 #include <string.h>
 #include <stdio.h>
@@ -11,31 +11,14 @@
 
 int main(int argc, char* argv[]){
 
-	if (argc < 2) {
-		return 1;
-	}
-
-	int m[9][9] = {
-        {0,0,1,0,0,0,0,3,5},
-        {0,0,0,0,0,0,0,0,0},
-        {6,0,0,0,0,0,0,0,0},
-        {1,0,0,0,4,0,0,0,0},
-        {2,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,2,0,0,0},
-        {0,0,0,0,0,4,0,0,0}
-	};
-
 	if (strcmp(argv[1], "server") == 0) {
-		server_protocol_t sv_protocol;
-		if (server_protocol_init(&sv_protocol, "7777", m) == 1) {
+		server_interface_t sv_interface;
+		if (server_interface_init(&sv_interface, "7777")) {
 			return 1;
 		}
 		while (1) {
-			if (server_protocol_process(&sv_protocol) == 1) {
-				server_protocol_release(&sv_protocol);
-				return 0;
+			if (server_interface_process(&sv_interface)) {
+				return 1;
 			}
 		}
 

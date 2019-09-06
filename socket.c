@@ -29,7 +29,7 @@ int socket_connect(socket_t* skt, const char* host, const char* service) {
 	int s = socket_getaddrinfo(&result, host, service, false);
 
 	if (s != 0) { 
-    	printf("Error in getaddrinfo: %s\n", gai_strerror(s));
+    	fprintf(stderr, "Error in getaddrinfo: %s\n", gai_strerror(s));
     	return 1;
     }
 
@@ -46,20 +46,20 @@ int socket_bind_and_listen(socket_t* skt, const char* service, int listen_amount
 
 	int s = socket_getaddrinfo(&ptr, NULL, service, true);
 	if (s != 0) {
-    	printf("Error in getaddrinfo: %s\n", gai_strerror(s));
+    	fprintf(stderr, "Error in getaddrinfo: %s\n", gai_strerror(s));
     	return 1;
    	}
 
     skt->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 	if (skt->fd == -1) {
-      printf("Error: %s\n", strerror(errno));
+      fprintf(stderr, "Error: %s\n", strerror(errno));
       freeaddrinfo(ptr);
       return 1;
 	}
 
 	s = bind(skt->fd, ptr->ai_addr, ptr->ai_addrlen);
    	if (s == -1) {
-    	printf("Error: %s\n", strerror(errno));
+    	fprintf(stderr, "Error: %s\n", strerror(errno));
     	close(skt->fd);
     	freeaddrinfo(ptr);
     	return 1;
@@ -70,7 +70,7 @@ int socket_bind_and_listen(socket_t* skt, const char* service, int listen_amount
 	s = listen(skt->fd, listen_amount);
 
 	if (s == -1) {
-		printf("Error: %s\n", strerror(errno));
+		fprintf(stderr, "Error: %s\n", strerror(errno));
     	close(skt->fd);
     	return 1;
 	}
@@ -81,7 +81,7 @@ int socket_bind_and_listen(socket_t* skt, const char* service, int listen_amount
 int socket_accept_client(socket_t* sv_skt, socket_t* peer_skt) {
 	peer_skt->fd = accept(sv_skt->fd, NULL, NULL);
 	if (peer_skt->fd == -1){
-		printf("Error: %s\n", strerror(errno));
+		fprintf(stderr, "Error: %s\n", strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -150,12 +150,12 @@ void socket_addr_iterate(socket_t* skt, struct addrinfo* result) {
 	for (ptr = result; ptr != NULL && connection_established == false; ptr = ptr->ai_next) {
 		skt->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if (skt->fd == -1) {
-			printf("Error: %s\n", strerror(errno));
+			fprintf(stderr, "Error: %s\n", strerror(errno));
 		}
 		else {
 			s = connect(skt->fd, ptr->ai_addr, ptr->ai_addrlen);
         	if (s == -1) {
-            	printf("Error: %s\n", strerror(errno));
+            	fprintf(stderr, "Error: %s\n", strerror(errno));
             	close(skt->fd);
         	}
 			connection_established = (s != -1); //are we connected now?

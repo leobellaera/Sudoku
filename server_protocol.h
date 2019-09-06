@@ -5,14 +5,12 @@
 #include "server.h"
 
 typedef struct {
-	server_t sv;
-	sudoku_t sudoku;
+	server_t* server;
+	sudoku_t* sudoku;
 } server_protocol_t;
 
-int server_protocol_init(server_protocol_t* protocol, const char* port, int matrix[9][9]);
+void server_protocol_init(server_protocol_t* protocol, server_t* server, sudoku_t* sudoku);
 
 int server_protocol_process(server_protocol_t* protocol);
-
-void server_protocol_release(server_protocol_t* protocol);
 
 #endif

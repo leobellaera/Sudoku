@@ -5,8 +5,6 @@ int server_init(server_t* sv, const char* port) {
 	socket_init(&sv->sv_skt);
 	socket_init(&sv->peer_skt);
 	return socket_bind_and_listen(&sv->sv_skt, port, BACKLOG);
-	//sudoku_t sudoku;
-	//sudoku_init(&sudoku);
 }
 
 int server_accept_client(server_t* sv) {
