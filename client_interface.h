@@ -10,7 +10,8 @@ typedef struct {
 	
 } client_interface_t;
 
-int client_interface_init(client_interface_t* client_interface, const char* host, const char* service);
+int client_interface_init(client_interface_t* client_interface, 
+	const char* host, const char* service);
 
 int client_interface_process(client_interface_t* client_interface);
 

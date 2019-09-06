@@ -12,12 +12,12 @@ void client_protocol_init(client_protocol_t* protocol, client_t* client) {
 }
 
 char* client_protocol_recv_answer(client_protocol_t* protocol) {
-	char len_buffer[5];
-	len_buffer[4] = '\0';
+	char len_buffer[4];
 	if (client_recv_message(protocol->client, len_buffer, 4)) {
 		return NULL;
 	}
-	uint32_t text_len = *(uint32_t *)len_buffer;
+	uint32_t text_len;
+	memcpy(&text_len, len_buffer, 4);
 	text_len = ntohl(text_len);
 	char* text_buffer = malloc(sizeof(char)*text_len + 1);
 	text_buffer[text_len] = '\0';
