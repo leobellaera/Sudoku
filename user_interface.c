@@ -6,19 +6,25 @@
 #include <stdlib.h>
 
 #define EXIT_COMMAND "exit"
+#define PUT_COMMAND "put"
 
-#define FGETS_SIZE 14
+#define FGETS_SIZE 25
 
 #define SUCCESS 0
 #define ERROR 1
 #define EXIT 2
 #define INVALID_COMMAND 3
 
+#define INDEX_ERROR_MES "​Error en los índices. Rango soportado: [1,9]\n​"
+#define VALUE_ERROR_MES "​Error en el valor ingresado. Rango soportado: [1,9]\n​"
+
 int process_user_input(char* input);
 int execute_command(client_protocol_t* protocol, char* command);
-bool command_has_invalid_indexes(char* input);
-bool command_has_invalid_values(char* input);
-char* get_command(char* input);
+bool command_has_valid_indexes(char* input);
+bool command_has_valid_values(char* input);
+char* get_command_first_arg(char* input);
+bool index_is_allowed(char* index);
+bool value_is_allowed(char* value);
 
 int user_interface_init(user_interface_t* user_interface, const char* host, const char* service) {
 	if (client_init(&user_interface->client, host, service)) {
@@ -72,31 +78,53 @@ int execute_command(client_protocol_t* protocol, char* command) {
 //Asks user for input. Returns 1 if eof or invalid input, 0 in other case
 
 int process_user_input(char* input) {
-	printf("Ingresá un comando: ");
 	if (!fgets(input, FGETS_SIZE, stdin)) {
 		return EOF;
 	}
 	input[strlen(input) - 1] = '\0'; //replace '\n' with '\0'
-	if (command_has_invalid_indexes(input)) {
-		printf("​Error en los índices. Rango soportado: [1,9]\n​");
+	if (!command_has_valid_indexes(input)) {
+		fprintf(stdout, INDEX_ERROR_MES);
 		return INVALID_COMMAND;
 	}
-	else if (command_has_invalid_values(input)) {
-		printf("​Error en el valor ingresado. Rango soportado: [1,9]\n​");
+	else if (!command_has_valid_values(input)) {
+		fprintf(stdout, VALUE_ERROR_MES);
 		return INVALID_COMMAND;
 	}
 	return SUCCESS;
 }
 
-bool command_has_invalid_indexes(char* input) {
-	return false;
+bool command_has_valid_indexes(char* input) {
+	char* command_first_arg = get_command_first_arg(input);
+	if (strcmp(command_first_arg, PUT_COMMAND) == 0) {
+		char index_a[4], index_b[4];
+		index_a[3] = '\0';
+		index_b[3] = '\0';
+		sscanf(input, "%*s %*s %*s %3[^,]%*[, ]%3s", index_a, index_b); //scan of put indexes
+		if (!index_is_allowed(index_a) || !index_is_allowed(index_b)) {
+			free(command_first_arg);
+			return false;
+		}
+	}
+	free(command_first_arg);
+	return true;
 }
 
-bool command_has_invalid_values(char* input) {
-	return false;
+bool command_has_valid_values(char* input) {
+	char* command_first_arg = get_command_first_arg(input);
+	if (strcmp(command_first_arg, PUT_COMMAND) == 0) {
+		char value[4];
+		value[3] = '\0';
+		sscanf(input, "%*s %3s", value); //scan of put value
+		if (!value_is_allowed(value)) {
+			free(command_first_arg);
+			return false;
+		}
+	}
+	free(command_first_arg);
+	return true;
 }
 
-char* get_command(char* input) {
+char* get_command_first_arg(char* input) {
 	int i = 0;
 	while (input[i] != '\0' && input[i] != ' ') {
 		i++;
@@ -107,4 +135,22 @@ char* get_command(char* input) {
 		command[j] = input[j];
 	}
 	return command;
+}
+
+bool index_is_allowed(char* index) {
+	printf("%s\n", index);
+	int idx = atoi(index);
+	if (idx > 9 || idx < 1) {
+		return false;
+	}
+	return true;
+}
+
+bool value_is_allowed(char* value) {
+	printf("%s\n", value);
+	int v = atoi(value);
+	if (v > 9 || v < 1) {
+		return false;
+	}
+	return true;
 }
