@@ -16,12 +16,11 @@ char* assemble_board_representation(int matrix[9][9]) {
 		int actual_index = i*38;
 		if (i % 6 == 0) {
 			add_sector_separator(&board_representation[actual_index]);
-		}
-		else if (i % 2 == 0) {
+		} else if (i % 2 == 0) {
 			add_normal_separator(&board_representation[actual_index]);
-		}
-		else {
-			add_matrix_row(&board_representation[actual_index], matrix, matrix_row_index);
+		} else {
+			add_matrix_row(&board_representation[actual_index], 
+				matrix, matrix_row_index);
 			matrix_row_index += 1;
 		}
 	}
@@ -61,7 +60,7 @@ void iterate_row_representation(char* row_representation, int* row, int len) {
 	char aux[2];
 	while (i < len) {
 		if (row[j] != 0) {
-			snprintf(aux, 2, "%d", row[j]);
+			snprintf(aux, sizeof(aux)/sizeof(char), "%d", row[j]);
 			row_representation[i] = aux[0];
 		}
 		i += 4;

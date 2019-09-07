@@ -38,7 +38,8 @@ int send_modifiable_cell_message(server_protocol_t* protocol);
 int send_invalid_board_message(server_protocol_t* protocol);
 int send_valid_board_message(server_protocol_t* protocol);
 
-void server_protocol_init(server_protocol_t* protocol, server_t* server, sudoku_t* sudoku) {
+void server_protocol_init(server_protocol_t* protocol, 
+	server_t* server, sudoku_t* sudoku) {
 	protocol->server = server;
 	protocol->sudoku = sudoku;
 }
@@ -57,14 +58,14 @@ int server_protocol_process(server_protocol_t* protocol) {
 int process_message(server_protocol_t* protocol, char message) {
 	if (message == PUT_COMMAND_MES) {
 		return process_p_message(protocol);
-	}
-	else if (message == GET_COMMAND_MES) {
+
+	} else if (message == GET_COMMAND_MES) {
 		return process_g_message(protocol);
-	}
-	else if (message == RESET_COMMAND_MES) {
+
+	} else if (message == RESET_COMMAND_MES) {
 		return process_r_message(protocol);
-	}
-	else {
+
+	} else {
 		return process_v_message(protocol);
 	}
 }
@@ -75,7 +76,7 @@ int process_p_message(server_protocol_t* protocol) {
 	if (server_recv_message(protocol->server, buffer, 3)) {
 		return 1;
 	}
-	int numb = buffer[PUT_NUMB_BUFFER_IDX] - '0'; //here, we parse the value stored as an ascii code
+	int numb = buffer[PUT_NUMB_BUFFER_IDX] - '0';
 	int row = buffer[PUT_ROW_BUFFER_IDX] - '0';
 	int col = buffer[PUT_COL_BUFFER_IDX] - '0';
 

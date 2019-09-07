@@ -4,11 +4,7 @@
 #define ERROR 1
 #define EXIT 2
 
-//CAMBIAR NOMBRE SERVER Y CLIENT POR SERVER_SOCKET Y CLIENT_SOCKET
-//DIVIDIR BIND AND LISTEN!!!
-
 int main(int argc, char* argv[]){
-
 	sudoku_interface_t sudoku_interface;
 
 	int game_init = sudoku_interface_init(&sudoku_interface, argc, argv);
@@ -21,8 +17,7 @@ int main(int argc, char* argv[]){
 		execution = sudoku_interface_execute(&sudoku_interface);
 		if (execution == EXIT) {
 			return SUCCESS;
-		}
-		else if (execution == ERROR) {
+		} else if (execution == ERROR) {
 			return ERROR;
 		}
  	}

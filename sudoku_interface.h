@@ -10,7 +10,8 @@ typedef struct {
 	server_interface_t server_interface;
 } sudoku_interface_t;
 
-int sudoku_interface_init(sudoku_interface_t* sudoku_interface, int argc, char* argv[]);
+int sudoku_interface_init(sudoku_interface_t* sudoku_interface, 
+	int argc, char* argv[]);
 
 int sudoku_interface_execute(sudoku_interface_t* sudoku_interface);
 

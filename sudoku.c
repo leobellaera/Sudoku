@@ -5,7 +5,8 @@
 bool row_is_valid(sudoku_t* sudoku, int row_index);
 bool column_is_valid(sudoku_t* sudoku, int column_index);
 bool sector_is_valid(sudoku_t* sudoku, int sector_number);
-void put_sector_cells_in_array(sudoku_t* sudoku, int sector_number, cell_t* array);
+void put_sector_cells_in_array(sudoku_t* sudoku, 
+	int sector_number, cell_t* array);
 
 void sudoku_init(sudoku_t* sudoku, int matrix[9][9]){
 	for (int i = 0; i < 9; i++) {
@@ -49,7 +50,8 @@ bool row_is_valid(sudoku_t* sudoku, int row_index) {
 	int j;
 	for (int i = 0; i < 9; i++) {
         for (j = i + 1; j < 9; j++) {
-        	if (!cell_is_valid(&sudoku->board[row_index][i], &sudoku->board[row_index][j])) {
+        	if (!cell_is_valid(&sudoku->board[row_index][i], 
+        		&sudoku->board[row_index][j])) {
         		return false;
         	}
         }
@@ -61,7 +63,8 @@ bool column_is_valid(sudoku_t* sudoku, int column_index) {
 	int j;
 	for (int i = 0; i < 9; i++) {
         for (j = i + 1; j < 9; j++) {
-        	if (!cell_is_valid(&sudoku->board[i][column_index], &sudoku->board[j][column_index])) {
+        	if (!cell_is_valid(&sudoku->board[i][column_index], 
+        		&sudoku->board[j][column_index])) {
         		return false;
         	}
         }
@@ -83,7 +86,8 @@ bool sector_is_valid(sudoku_t* sudoku, int sector_number) {
     return true;
 }
 
-void put_sector_cells_in_array(sudoku_t* sudoku, int sector_number, cell_t* array) {
+void put_sector_cells_in_array(sudoku_t* sudoku, int sector_number, 
+	cell_t* array) {
 	int idx = sector_number * 3;
 	int final_idx = idx + 3;
 	int actual_pos = 0;

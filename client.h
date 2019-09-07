@@ -15,6 +15,4 @@ int client_send_message(client_t* client, char* buf, int size);
 
 void client_release(client_t* client);
 
-
-
 #endif

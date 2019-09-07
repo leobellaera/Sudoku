@@ -26,14 +26,14 @@ char* init_message(int len);
 char* build_protocol_message(char* command) {
 	if (strcmp(GET_COMMAND, command) == 0) {
 		return build_get_message(command);
-	}
-	else if (strcmp(RESET_COMMAND, command) == 0) {
+
+	} else if (strcmp(RESET_COMMAND, command) == 0) {
 		return build_reset_message(command);
-	}
-	else if (strcmp(VERIFY_COMMAND, command) == 0) {
+
+	} else if (strcmp(VERIFY_COMMAND, command) == 0) {
 		return build_verify_message(command);
-	}
-	else {
+		
+	} else {
 		return build_put_message(command);
 	}
 }
