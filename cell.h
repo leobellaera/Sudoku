@@ -10,9 +10,7 @@ typedef struct cell {
 
 void cell_init(cell_t* cell, int number, bool modifiable);
 
-bool cell_is_modifiable(cell_t* cell);
-
-void cell_set_number(cell_t* cell, int numb);
+int cell_set_number(cell_t* cell, int numb);
 
 int cell_get_number(cell_t* cell);
 

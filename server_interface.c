@@ -9,7 +9,7 @@ int server_interface_init(server_interface_t* self, const char* port) {
 	if (load_sudoku_matrix(matrix) == ERROR) {
 		return ERROR;
 	}
-	sudoku_init(&self->sudoku, matrix);
+	sudoku_board_init(&self->board, matrix);
 	if (server_socket_init(&self->skt, port) == ERROR) {
 		return ERROR;
 	}
@@ -17,7 +17,7 @@ int server_interface_init(server_interface_t* self, const char* port) {
 		server_socket_release(&self->skt);
 		return ERROR;
 	}
-	server_protocol_init(&self->protocol, &self->skt, &self->sudoku);
+	server_protocol_init(&self->protocol, &self->skt, &self->board);
 	return SUCCESS;
 }
 

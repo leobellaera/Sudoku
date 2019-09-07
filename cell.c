@@ -5,12 +5,12 @@ void cell_init(cell_t* cell, int number, bool modifiable) {
 	cell->number = number;
 }
 
-bool cell_is_modifiable(cell_t* cell) {
-	return cell->modifiable;
-}
-
-void cell_set_number(cell_t* cell, int numb) {
+int cell_set_number(cell_t* cell, int numb) {
+	if (!cell->modifiable) {
+		return 1;
+	}
 	cell->number = numb;
+	return 0;
 }
 
 int cell_get_number(cell_t* cell) {

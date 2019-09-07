@@ -39,9 +39,9 @@ int send_invalid_board_message(server_protocol_t* protocol);
 int send_valid_board_message(server_protocol_t* protocol);
 
 void server_protocol_init(server_protocol_t* protocol, 
-	server_socket_t* skt, sudoku_t* sudoku) {
+	server_socket_t* skt, sudoku_board_t* board) {
 	protocol->skt = skt;
-	protocol->sudoku = sudoku;
+	protocol->board = board;
 }
 
 int server_protocol_process(server_protocol_t* protocol) {
@@ -80,7 +80,7 @@ int process_p_message(server_protocol_t* protocol) {
 	int row = buffer[PUT_ROW_BUFFER_IDX] - '0';
 	int col = buffer[PUT_COL_BUFFER_IDX] - '0';
 
-	int unmodifiable_cell = sudoku_put(protocol->sudoku, numb, row, col);
+	int unmodifiable_cell = sudoku_board_put(protocol->board, numb, row, col);
 	if (unmodifiable_cell) {
 		return send_unmodifiable_cell_message(protocol);
 	} else {
@@ -104,12 +104,12 @@ int process_g_message(server_protocol_t* protocol) {
 }
 
 int process_r_message(server_protocol_t* protocol) {
-	sudoku_restart(protocol->sudoku);
+	sudoku_board_restart(protocol->board);
 	return show_board_to_client(protocol);
 }
 
 int process_v_message(server_protocol_t* protocol) {
-	if (sudoku_verify(protocol->sudoku)) {
+	if (sudoku_board_verify(protocol->board)) {
 		return send_invalid_board_message(protocol);
 	}
 	return send_valid_board_message(protocol);
@@ -131,7 +131,7 @@ int send_valid_board_message(server_protocol_t* protocol) {
 
 int show_board_to_client(server_protocol_t* protocol) {
 	int matrix[9][9];
-	sudoku_show_board(protocol->sudoku, matrix);
+	sudoku_board_get(protocol->board, matrix);
 	char* board_representation = assemble_board_representation(matrix);
 	int error = send_message_to_client(protocol, board_representation);
 	free(board_representation);

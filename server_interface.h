@@ -3,10 +3,10 @@
 
 #include "server_protocol.h"
 #include "server_socket.h"
-#include "sudoku.h"
+#include "sudoku_board.h"
 
 typedef struct {
-	sudoku_t sudoku;
+	sudoku_board_t board;
 	server_socket_t skt;
 	server_protocol_t protocol;
 } server_interface_t;
