@@ -11,8 +11,16 @@
 #include <errno.h>
 #include <stdbool.h>
 
-void socket_addr_iterate(socket_t* skt, struct addrinfo* result, bool* connection_established);
-int socket_getaddrinfo(struct addrinfo **result, const char* host, const char* service, bool pasive);
+//forward declarations 
+void socket_addr_iterate(socket_t* skt, struct addrinfo* result, 
+	bool* connection_established);
+
+int socket_getaddrinfo(struct addrinfo **result, const char* host, 
+	const char* service, bool pasive);
+
+int socket_bind(int sockfd, struct addrinfo* ptr);
+int socket_listen(int sockfd, int listen_amount);
+
 
 void socket_init(socket_t* socket) {
 	socket->fd = -1; //initialize to invalid fd
@@ -42,40 +50,28 @@ int socket_connect(socket_t* skt, const char* host, const char* service) {
 	return 0;
 }
 
-int socket_bind_and_listen(socket_t* skt, const char* service, int listen_amount) {
+int socket_bind_and_listen(socket_t* skt, const char* service, 
+	int listen_amount) {
 	struct addrinfo *ptr = NULL;
-
 	int s = socket_getaddrinfo(&ptr, NULL, service, true);
 	if (s != 0) {
     	fprintf(stderr, "Error in getaddrinfo: %s\n", gai_strerror(s));
     	return 1;
    	}
-
     skt->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 	if (skt->fd == -1) {
       fprintf(stderr, "Error: %s\n", strerror(errno));
       freeaddrinfo(ptr);
       return 1;
 	}
-
-	s = bind(skt->fd, ptr->ai_addr, ptr->ai_addrlen);
-   	if (s == -1) {
-    	fprintf(stderr, "Error: %s\n", strerror(errno));
-    	close(skt->fd);
-    	freeaddrinfo(ptr);
-    	return 1;
+	if (socket_bind(skt->fd, ptr) == 1) {
+		freeaddrinfo(ptr);
+		return 1;
 	}
-
 	freeaddrinfo(ptr);
-
-	s = listen(skt->fd, listen_amount);
-
-	if (s == -1) {
-		fprintf(stderr, "Error: %s\n", strerror(errno));
-    	close(skt->fd);
-    	return 1;
+	if (socket_listen(skt->fd, listen_amount) == 1) {
+		return 1;
 	}
-
 	return 0;
 }
 
@@ -88,23 +84,20 @@ int socket_accept_client(socket_t* sv_skt, socket_t* peer_skt) {
 	return 0;
 }
 
-//Returns bytes received if message was received successfully and -1 in error case.
 int socket_recv_message(socket_t* skt, char *buf, int size){
 	int received = 0;
 	int s = 0;
 	while (received < size) {
 		s = recv(skt->fd, &buf[received], size-received, MSG_NOSIGNAL);
-		if (s == 0 || s == -1) { //the socket was closed
+		if (s == 0 || s == -1) { //socket was closed or error occurred
 			return -1;
-		}
-		else {
+		} else {
          received += s;
 		}
 	}
 	return received;
 }
 
-//Returns bytes sent if message was sent successfully and -1 in error case.
 int socket_send_message(socket_t* skt, char *buf, int size){
 	int sent = 0;
 	int s = 0;
@@ -112,23 +105,23 @@ int socket_send_message(socket_t* skt, char *buf, int size){
 		s = send(skt->fd, &buf[sent], size-sent, MSG_NOSIGNAL);
 		if (s == 0 || s == -1) { //socket was closed or error occurred
 			return -1;
-		}
-		else {
+		} else {
 			sent += s;
 		}
 	}
 	return sent;
 }
 
-void socket_addr_iterate(socket_t* skt, struct addrinfo* result, bool* connection_established) {
+void socket_addr_iterate(socket_t* skt, struct addrinfo* result, 
+	bool* connection_established) {
 	struct addrinfo* ptr;
 	int s;
-	for (ptr = result; ptr != NULL && *connection_established == false; ptr = ptr->ai_next) {
+	for (ptr = result; ptr != NULL && *connection_established == false; 
+		ptr = ptr->ai_next) {
 		skt->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if (skt->fd == -1) {
 			fprintf(stderr, "Error: %s\n", strerror(errno));
-		}
-		else {
+		} else {
 			s = connect(skt->fd, ptr->ai_addr, ptr->ai_addrlen);
         	if (s == -1) {
             	fprintf(stderr, "Error: %s\n", strerror(errno));
@@ -136,11 +129,11 @@ void socket_addr_iterate(socket_t* skt, struct addrinfo* result, bool* connectio
         	}
 			*connection_established = (s != -1); //are we connected now?
 		}
-	}
-	
+	}	
 }
 
-int socket_getaddrinfo(struct addrinfo **addrinfo_ptr, const char* host, const char* service, bool passive) {
+int socket_getaddrinfo(struct addrinfo **addrinfo_ptr, const char* host, 
+	const char* service, bool passive) {
 	struct addrinfo hints;
 	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_family = AF_INET;
@@ -149,9 +142,28 @@ int socket_getaddrinfo(struct addrinfo **addrinfo_ptr, const char* host, const c
 	if (passive){
 		hints.ai_flags = AI_PASSIVE;
 		return getaddrinfo(NULL, service, &hints, addrinfo_ptr);
-	}
-	else {
+	} else {
 		hints.ai_flags = 0;
 		return getaddrinfo(host, service, &hints, addrinfo_ptr);
 	}
+}
+
+int socket_bind(int sockfd, struct addrinfo* ptr) {
+	int s = bind(sockfd, ptr->ai_addr, ptr->ai_addrlen);
+   	if (s == -1) {
+    	fprintf(stderr, "Error: %s\n", strerror(errno));
+    	close(sockfd);
+    	return 1;
+	}
+	return 0;
+}
+
+int socket_listen(int sockfd, int listen_amount) {
+	int s = listen(sockfd, listen_amount);
+	if (s == -1) {
+		fprintf(stderr, "Error: %s\n", strerror(errno));
+    	close(sockfd);
+    	return 1;
+	}
+	return 0;
 }

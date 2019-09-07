@@ -8,15 +8,15 @@
 #define ERROR 1
 #define EXIT 2
 
-#define UNSOPPORTED_MODE_MSG "Modo no soportado, 
-el primer parámetro debe ser server o client\n​"
-
-#define SV_MODE_WRONG_USE_MSG "Uso: ./tp server <puerto>\n​"
-#define CL_MODE_WRONG_USE_MSG "Uso: ./tp client <host> <puerto>\n​"
-
 int check_arguments(int argc, char* argv[]);
 int init_mode_executed(sudoku_interface_t* sudoku_interface, char* argv[]);
 bool first_argument_unsopported(char* arg);
+
+#define UNSOPPORTED_MODE_MSG "Modo no soportado, el primer parámetro "\
+							 "debe ser server o client\n"
+
+#define SV_MODE_WRONG_USE_MSG "Uso: ./tp server <puerto>\n"
+#define CL_MODE_WRONG_USE_MSG "Uso: ./tp client <host> <puerto>\n"
 
 int sudoku_interface_init(sudoku_interface_t* sudoku_interface, 
 	int argc, char* argv[]){
