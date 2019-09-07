@@ -10,20 +10,20 @@ int server_interface_init(server_interface_t* self, const char* port) {
 		return ERROR;
 	}
 	sudoku_init(&self->sudoku, matrix);
-	if (server_init(&self->server, port) == ERROR) {
+	if (server_socket_init(&self->skt, port) == ERROR) {
 		return ERROR;
 	}
-	if (server_accept_client(&self->server) == ERROR) {
-		server_release(&self->server);
+	if (server_socket_accept_client(&self->skt) == ERROR) {
+		server_socket_release(&self->skt);
 		return ERROR;
 	}
-	server_protocol_init(&self->protocol, &self->server, &self->sudoku);
+	server_protocol_init(&self->protocol, &self->skt, &self->sudoku);
 	return SUCCESS;
 }
 
 int server_interface_process(server_interface_t* self) {
 	if (server_protocol_process(&self->protocol)) {
-		server_release(&self->server);
+		server_socket_release(&self->skt);
 		return ERROR;
 	}
 	return SUCCESS;

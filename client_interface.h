@@ -1,11 +1,11 @@
 #ifndef _CLIENT_INTERFACE_H
 #define _CLIENT_INTERFACE_H
 
-#include "client.h"
+#include "client_socket.h"
 #include "client_protocol.h"
 
 typedef struct {
-	client_t client;
+	client_socket_t skt;
 	client_protocol_t protocol;
 } client_interface_t;
 

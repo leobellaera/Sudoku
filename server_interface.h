@@ -2,12 +2,12 @@
 #define _SERVER_INTERFACE_H_
 
 #include "server_protocol.h"
-#include "server.h"
+#include "server_socket.h"
 #include "sudoku.h"
 
 typedef struct {
 	sudoku_t sudoku;
-	server_t server;
+	server_socket_t skt;
 	server_protocol_t protocol;
 } server_interface_t;
 

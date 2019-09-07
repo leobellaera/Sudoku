@@ -29,10 +29,10 @@ bool value_is_allowed(char* value);
 
 int client_interface_init(client_interface_t* client_interface, 
 	const char* host, const char* service) {
-	if (client_init(&client_interface->client, host, service)) {
+	if (client_socket_init(&client_interface->skt, host, service)) {
 		return ERROR;
 	}
-	client_protocol_init(&client_interface->protocol, &client_interface->client);
+	client_protocol_init(&client_interface->protocol, &client_interface->skt);
 	return SUCCESS;
 }
 
@@ -40,18 +40,18 @@ int client_interface_process(client_interface_t* client_interface) {
 	char buffer[FGETS_SIZE];
 	int input_state = process_user_input(buffer);
 	if (input_state == EOF) {
-		client_release(&client_interface->client);
+		client_socket_release(&client_interface->skt);
 		return ERROR;
 	}
 	if (input_state == INVALID_COMMAND) {
 		return SUCCESS;
 	}
 	if (strcmp(buffer, EXIT_COMMAND) == 0) {
-		client_release(&client_interface->client);
+		client_socket_release(&client_interface->skt);
 		return EXIT;
 	}
 	if (execute_command(&client_interface->protocol, buffer)) {
-		client_release(&client_interface->client);
+		client_socket_release(&client_interface->skt);
 		return ERROR;
 	}
 	return SUCCESS;

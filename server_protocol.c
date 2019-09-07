@@ -39,14 +39,14 @@ int send_invalid_board_message(server_protocol_t* protocol);
 int send_valid_board_message(server_protocol_t* protocol);
 
 void server_protocol_init(server_protocol_t* protocol, 
-	server_t* server, sudoku_t* sudoku) {
-	protocol->server = server;
+	server_socket_t* skt, sudoku_t* sudoku) {
+	protocol->skt = skt;
 	protocol->sudoku = sudoku;
 }
 
 int server_protocol_process(server_protocol_t* protocol) {
 	char buffer;
-	if (server_recv_message(protocol->server, &buffer, 1)) {
+	if (server_socket_recv_message(protocol->skt, &buffer, 1)) {
 		return 1;
 	}
 	if (process_message(protocol, buffer)) {
@@ -73,7 +73,7 @@ int process_message(server_protocol_t* protocol, char message) {
 
 int process_p_message(server_protocol_t* protocol) {
 	char buffer[3];
-	if (server_recv_message(protocol->server, buffer, 3)) {
+	if (server_socket_recv_message(protocol->skt, buffer, 3)) {
 		return 1;
 	}
 	int numb = buffer[PUT_NUMB_BUFFER_IDX] - '0';
@@ -141,11 +141,11 @@ int show_board_to_client(server_protocol_t* protocol) {
 int send_message_to_client(server_protocol_t* protocol, char* msg) {
 	uint32_t len = calculate_str_len(msg);
 	uint32_t len_ton = htonl(len);
-	if (server_send_message(protocol->server, (char*)&len_ton, 4)) {
+	if (server_socket_send_message(protocol->skt, (char*)&len_ton, 4)) {
 		return 1;
 	}
 	for (int i = 0; i < len; i++) {
-		if (server_send_message(protocol->server, &msg[i], 1)) {
+		if (server_socket_send_message(protocol->skt, &msg[i], 1)) {
 			return 1;
 		}
 	}
