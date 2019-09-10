@@ -19,6 +19,10 @@
 #define INVALID_BOARD_MSG "ERROR\n"
 #define UNMODIFIABLE_CELL_MSG "La celda indicada no es modificable\n​"
 
+#define UINT32_BYTES_LEN 4
+
+#define ERROR 1
+
 //forward declarations
 
 uint32_t calculate_str_len(char* str);
@@ -89,7 +93,7 @@ int process_p_message(server_protocol_t* protocol) {
 }
 
 int send_unmodifiable_cell_message(server_protocol_t* protocol) {
-	if (send_message_to_client(protocol, UNMODIFIABLE_CELL_MSG) == 1) {
+	if (send_message_to_client(protocol, UNMODIFIABLE_CELL_MSG) == ERROR) {
 		return 1;
 	}
 	return 0;
@@ -116,14 +120,14 @@ int process_v_message(server_protocol_t* protocol) {
 }
 
 int send_invalid_board_message(server_protocol_t* protocol) {
-	if (send_message_to_client(protocol, INVALID_BOARD_MSG) == 1) {
+	if (send_message_to_client(protocol, INVALID_BOARD_MSG) == ERROR) {
 		return 1;
 	}
 	return 0;
 }
 
 int send_valid_board_message(server_protocol_t* protocol) {
-	if (send_message_to_client(protocol, VALID_BOARD_MSG) == 1) {
+	if (send_message_to_client(protocol, VALID_BOARD_MSG) == ERROR) {
 		return 1;
 	}
 	return 0;
@@ -141,7 +145,7 @@ int show_board_to_client(server_protocol_t* protocol) {
 int send_message_to_client(server_protocol_t* protocol, char* msg) {
 	uint32_t len = calculate_str_len(msg);
 	uint32_t len_ton = htonl(len);
-	if (server_socket_send_message(protocol->skt, (char*)&len_ton, 4)) {
+	if (server_socket_send_message(protocol->skt, (char*)&len_ton, UINT32_BYTES_LEN)) {
 		return 1;
 	}
 	for (int i = 0; i < len; i++) {
